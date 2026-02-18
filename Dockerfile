@@ -1,29 +1,30 @@
 FROM python:3.13-slim
 
-# Устанавливаем системные зависимости
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем uv
-RUN pip install --no-cache-dir uv
-
-# Рабочая директория
+# Working directory
 WORKDIR /app
 
-# Копируем только зависимости (кэширование слоёв)
-COPY pyproject.toml uv.lock ./
+# Copy dependency metadata for layer caching
+COPY pyproject.toml ./
 
-# Устанавливаем зависимости
-RUN uv sync --frozen
+# Install Python dependencies into system site-packages
+RUN pip install --no-cache-dir \
+    "django>=6.0.1" \
+    "django-taggit>=6.1.0" \
+    "markdown>=3.10.2" \
+    "psycopg[binary]>=3.3.2"
 
-# Копируем весь проект
+# Copy project
 COPY . .
 
-# Открываем порт
+# Expose port
 EXPOSE 8000
 
-# Запуск Django
-CMD ["uv", "run", "python", "app/manage.py", "runserver", "0.0.0.0:8000"]
+# Start Django
+CMD ["python", "app/manage.py", "runserver", "0.0.0.0:8000"]
