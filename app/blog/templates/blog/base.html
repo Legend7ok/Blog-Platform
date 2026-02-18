@@ -8,12 +8,10 @@
     <title>{% block title %}{% endblock %}</title>
 
     <!-- Tailwind CSS -->
-    <link href="{% static 'blog/css/dist/output.css' %}" rel="stylesheet">
+    <link href="{% static 'dist/styles.css' %}" rel="stylesheet">
 </head>
 
 <body class="bg-gray-50 text-gray-900">
-
-    <h1 class="text-3xl font-bold text-blue-600">Test</h1>
 
     <!-- Navbar -->
     <header class="bg-white shadow-sm">
@@ -22,7 +20,7 @@
                class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition">
                 My Blog
             </a>
-
+            Text
             <a href="{% url 'blog:post_feed' %}"
                class="text-sm font-medium text-blue-600 hover:underline">
                 RSS Feed
