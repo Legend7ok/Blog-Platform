@@ -5,7 +5,6 @@
 
 {% block content %}
     <div class="space-y-2 mb-6">
-        <h1 class="text-3xl font-semibold tracking-tight text-gray-900">My Blog</h1>
         {% if tag %}
             <p class="text-sm text-gray-600">
                 Posts tagged with "<span class="font-medium text-gray-900">{{ tag.name }}</span>"
@@ -47,4 +46,5 @@
     <div class="mt-8">
         {% include "pagination.html" with page=posts %}
     </div>
+
 {% endblock %}

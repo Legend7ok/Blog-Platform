@@ -41,10 +41,10 @@
             </section>
 
             <!-- Sidebar -->
-            <aside class="space-y-8 lg:justify-self-end lg:w-72">
+            <aside class="space-y-8 lg:justify-self-end lg:w-full">
 
                 <!-- About Card -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm">
+                <div class="bg-white p-6 rounded-2xl shadow-sm text-center">
                     <h2 class="text-lg font-semibold mb-3">About</h2>
                     <p class="text-gray-600 text-sm leading-relaxed">
                         This is my blog.
@@ -55,7 +55,7 @@
                 </div>
 
                 <!-- Latest Posts -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm">
+                <div class="bg-white p-6 rounded-2xl shadow-sm text-center">
                     <h3 class="text-lg font-semibold mb-4">Latest Posts</h3>
                     <div class="space-y-2 text-sm">
                         {% show_latest_posts 3 %}
@@ -63,7 +63,7 @@
                 </div>
 
                 <!-- Most Commented -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm">
+                <div class="bg-white p-6 rounded-2xl shadow-sm text-center">
                     <h3 class="text-lg font-semibold mb-4">Most Commented</h3>
                     {% get_most_commented_posts as most_commented_posts %}
                     <ul class="space-y-2 text-sm">
