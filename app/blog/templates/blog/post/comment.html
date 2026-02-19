@@ -3,10 +3,14 @@
 {% block title %}Add a comment{% endblock %}
 
 {% block content %}
-  {% if comment %}
-    <h2>Your comment has been added.</h2>
-    <p><a href="{{ post.get_absolute_url }}">Back to the post</a></p>
-  {% else %}
-    {% include "blog/post/includes/comment_form.html" %}
-  {% endif %}
+  <div class="rounded-[12px] border border-gray-200 bg-white px-4 py-6 sm:px-6">
+    {% if comment %}
+      <h2 class="text-lg font-semibold text-gray-900">Your comment has been added.</h2>
+      <p class="mt-2 text-sm">
+        <a href="{{ post.get_absolute_url }}" class="text-blue-600 hover:underline">Back to the post</a>
+      </p>
+    {% else %}
+      {% include "blog/post/includes/comment_form.html" %}
+    {% endif %}
+  </div>
 {% endblock %}
