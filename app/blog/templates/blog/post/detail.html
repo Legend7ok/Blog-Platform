@@ -50,7 +50,7 @@
             {% endwith %}
             <div class="mt-4 space-y-4 text-sm text-gray-700">
                 {% for comment in comments %}
-                    <div class="rounded-lg border border-purple-200 bg-gray-50 px-4 py-3">
+                    <div class="rounded-lg border-3 border-purple-400 bg-gray-50 px-4 py-3">
                         <p class="text-xs text-gray-500">
                             Comment {{ forloop.counter }} by {{ comment.name }}
                             {{ comment.created }}
