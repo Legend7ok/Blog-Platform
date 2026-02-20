@@ -15,13 +15,13 @@
 
     <!-- Navbar -->
     <header class="bg-white shadow-sm">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4 sm:flex-row sm:items-center">
             <a href="{% url 'blog:post_list' %}"
                class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition">
                 Super Blog
             </a>
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-                <form action="{% url 'blog:post_search' %}" method="get" class="flex items-center gap-2">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+                <form action="{% url 'blog:post_search' %}" method="get" class="flex items-center gap-2 sm:ml-6">
                     <input type="search" name="query" required
                            placeholder="Search posts"
                            aria-label="Search posts"
@@ -31,7 +31,7 @@
                         Search
                     </button>
                 </form>
-                <div class="text-sm text-gray-600">
+                <div class="text-sm text-gray-600 whitespace-nowrap sm:ml-auto">
                     Subscribe to my
                     <a href="{% url 'blog:post_feed' %}"
                        class="font-medium text-blue-600 hover:underline">
