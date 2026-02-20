@@ -7,6 +7,7 @@
         <p class="mt-2 text-sm text-gray-600">
             "{{ post.title }}" was successfully sent to {{ form.cleaned_data.to }}.
         </p>
+        <a href="{{ post.get_absolute_url }}" class="text-blue-600 hover:underline">Back to the post</a>
     {% else %}
         <h2 class="text-lg font-semibold text-gray-900">Share "{{ post.title }}" by e-mail</h2>
         <form method="post"
