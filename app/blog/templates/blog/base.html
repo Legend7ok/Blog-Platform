@@ -20,7 +20,7 @@
                class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition">
                 Super Blog
             </a>
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+            <div class="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
                 <form action="{% url 'blog:post_search' %}" method="get" class="flex items-center gap-2 sm:ml-6">
                     <input type="search" name="query" required
                            placeholder="Search posts"
