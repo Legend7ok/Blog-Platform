@@ -1,8 +1,8 @@
 <!-- Form title -->
-<h2 class="text-lg font-semibold text-gray-900">Add a new comment</h2>
+<h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Add a new comment</h2>
 <!-- Comment form -->
 <form action="{% url 'blog:post_comment' post.id %}" method="post"
-      class="mt-4 space-y-4 [&_label]:block [&_label]:text-sm [&_label]:font-medium [&_label]:text-gray-700 [&_input]:w-full [&_input]:rounded-lg [&_input]:border [&_input]:border-gray-200 [&_input]:bg-white [&_input]:px-3 [&_input]:py-2 [&_input]:text-sm [&_input]:text-gray-900 [&_input]:shadow-sm [&_input:focus]:outline-none [&_input:focus]:ring-2 [&_input:focus]:ring-purple-500 [&_textarea]:w-full [&_textarea]:rounded-lg [&_textarea]:border [&_textarea]:border-gray-200 [&_textarea]:bg-white [&_textarea]:px-3 [&_textarea]:py-2 [&_textarea]:text-sm [&_textarea]:text-gray-900 [&_textarea]:shadow-sm [&_textarea]:min-h-[120px] [&_textarea:focus]:outline-none [&_textarea:focus]:ring-2 [&_textarea:focus]:ring-purple-500">
+      class="mt-4 space-y-4 [&_label]:block [&_label]:text-sm [&_label]:font-medium [&_label]:text-gray-700 dark:[&_label]:text-gray-300 [&_input]:w-full [&_input]:rounded-lg [&_input]:border [&_input]:border-gray-200 dark:[&_input]:border-gray-800 [&_input]:bg-white dark:[&_input]:bg-gray-900 [&_input]:px-3 [&_input]:py-2 [&_input]:text-sm [&_input]:text-gray-900 dark:[&_input]:text-gray-100 [&_input]:shadow-sm [&_input:focus]:outline-none [&_input:focus]:ring-2 [&_input:focus]:ring-purple-500 dark:[&_input:focus]:ring-purple-400 [&_textarea]:w-full [&_textarea]:rounded-lg [&_textarea]:border [&_textarea]:border-gray-200 dark:[&_textarea]:border-gray-800 [&_textarea]:bg-white dark:[&_textarea]:bg-gray-900 [&_textarea]:px-3 [&_textarea]:py-2 [&_textarea]:text-sm [&_textarea]:text-gray-900 dark:[&_textarea]:text-gray-100 [&_textarea]:shadow-sm [&_textarea]:min-h-[120px] [&_textarea:focus]:outline-none [&_textarea:focus]:ring-2 [&_textarea:focus]:ring-purple-500 dark:[&_textarea:focus]:ring-purple-400">
     {% csrf_token %}
 
     <!-- Form-level errors -->
@@ -20,7 +20,7 @@
                 {{ field }}
             </div>
             {% if field.help_text %}
-                <p class="mt-1 text-xs text-gray-400">{{ field.help_text }}</p>
+                <p class="mt-1 text-xs text-gray-400 dark:text-gray-400">{{ field.help_text }}</p>
             {% endif %}
             <!-- Field errors -->
             {% for error in field.errors %}
