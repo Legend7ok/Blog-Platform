@@ -3,13 +3,16 @@
 {% block title %}Add a comment{% endblock %}
 
 {% block content %}
+  <!-- Comment result card -->
   <div class="rounded-[12px] border border-gray-200 bg-white px-4 py-6 sm:px-6">
     {% if comment %}
+      <!-- Success message -->
       <h2 class="text-lg font-semibold text-gray-900">Your comment has been added.</h2>
       <p class="mt-2 text-sm">
         <a href="{{ post.get_absolute_url }}" class="text-blue-600 hover:underline">Back to the post</a>
       </p>
     {% else %}
+      <!-- Comment form include -->
       {% include "blog/post/includes/comment_form.html" %}
     {% endif %}
   </div>
