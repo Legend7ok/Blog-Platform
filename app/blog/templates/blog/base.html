@@ -35,7 +35,7 @@
 <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
 
     <!-- Navbar -->
-    <header class="bg-white shadow-sm dark:bg-gray-950/80 dark:shadow-black/20">
+    <header class="border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4 sm:flex-row sm:items-center">
             <!-- Brand / home link -->
             <a href="{% url 'blog:post_list' %}"
@@ -97,7 +97,7 @@
             <aside class="space-y-8 lg:justify-self-end lg:w-full">
 
                 <!-- About card -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm text-center dark:bg-gray-950/80 dark:shadow-black/20">
+                <div class="rounded-[10px] border border-gray-200 bg-white p-6 text-center dark:border-gray-700 dark:bg-gray-900">
                     <h2 class="text-lg font-semibold mb-3">About</h2>
                     <p class="text-gray-600 text-sm leading-relaxed dark:text-gray-300">
                         This is my blog.
@@ -108,7 +108,7 @@
                 </div>
 
                 <!-- Latest posts -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm text-center dark:bg-gray-950/80 dark:shadow-black/20">
+                <div class="rounded-[10px] border border-gray-200 bg-white p-6 text-center dark:border-gray-700 dark:bg-gray-900">
                     <h3 class="text-lg font-semibold mb-4">Latest Posts</h3>
                     <div class="space-y-2 text-sm text-blue-600 dark:text-blue-400">
                         {% show_latest_posts 3 %}
@@ -116,7 +116,7 @@
                 </div>
 
                 <!-- Most commented posts -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm text-center dark:bg-gray-950/80 dark:shadow-black/20">
+                <div class="rounded-[10px] border border-gray-200 bg-white p-6 text-center dark:border-gray-700 dark:bg-gray-900">
                     <h3 class="text-lg font-semibold mb-4">Most Commented</h3>
                     {% get_most_commented_posts as most_commented_posts %}
                     <ul class="space-y-2 text-sm">
