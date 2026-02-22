@@ -8,10 +8,10 @@
     {% if query %}
         <!-- Query summary -->
         <div class="space-y-2">
-            <p class="text-sm text-gray-600">
-                Posts containing "<span class="font-medium text-gray-900">{{ query }}</span>"
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                Posts containing "<span class="font-medium text-gray-900 dark:text-gray-100">{{ query }}</span>"
             </p>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
                 {% with results.count as total_results %}
                     Found {{ total_results }} result{{ total_results|pluralize }}
                 {% endwith %}
@@ -22,21 +22,21 @@
         <div class="space-y-6 mt-4">
             {% for post in results %}
                 <!-- Result card -->
-                <article class="rounded-[10px] border border-gray-200 bg-white px-4 pt-12 pb-4">
+                <article class="rounded-[10px] border border-gray-200 bg-white px-4 pt-12 pb-4 shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900 dark:shadow-black/20">
                     <!-- Result date -->
-                    <time datetime="{{ post.publish|date:'Y-m-d' }}" class="block text-xs text-gray-500">
+                    <time datetime="{{ post.publish|date:'Y-m-d' }}" class="block text-xs text-gray-500 dark:text-gray-400">
                         {{ post.publish|date:"jS M Y" }}
                     </time>
 
                     <!-- Result title -->
                     <a href="{{ post.get_absolute_url }}">
-                        <h3 class="mt-0.5 text-lg font-medium text-gray-900">
+                        <h3 class="mt-0.5 text-lg font-semibold text-gray-900 transition-colors hover:text-gray-700 dark:text-gray-100 dark:hover:text-gray-50">
                             {{ post.title }}
                         </h3>
                     </a>
 
                     <!-- Result excerpt -->
-                    <p class="mt-3 text-sm text-gray-600">
+                    <p class="mt-3 text-sm text-gray-600 dark:text-gray-400">
                         {{ post.body|markdown|truncatewords_html:30 }}
                     </p>
 
@@ -44,16 +44,16 @@
                     <div class="mt-4 flex flex-wrap gap-1">
                         {% for tag in post.tags.all %}
                             <a href="{% url 'blog:post_list_by_tag' tag.slug %}"
-                               class="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs whitespace-nowrap text-purple-600">
+                               class="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs whitespace-nowrap text-purple-700 transition-colors hover:bg-purple-200 dark:bg-purple-500/20 dark:text-purple-300 dark:hover:bg-purple-500/30">
                                 {{ tag.name }}
                             </a>
                         {% empty %}
-                            <span class="text-xs text-gray-400">No tags</span>
+                            <span class="text-xs text-gray-400 dark:text-gray-400">No tags</span>
                         {% endfor %}
                     </div>
                 </article>
             {% empty %}
-                <p class="text-sm text-gray-600">There are no results for your query.</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">There are no results for your query.</p>
             {% endfor %}
         </div>
 
