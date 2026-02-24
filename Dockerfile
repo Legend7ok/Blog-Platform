@@ -16,9 +16,11 @@ COPY pyproject.toml ./
 # Install Python dependencies into system site-packages
 RUN pip install --no-cache-dir \
     "django>=6.0.1" \
+    "django-storages[s3]>=1.14.6" \
     "django-taggit>=6.1.0" \
     "markdown>=3.10.2" \
-    "psycopg[binary]>=3.3.2"
+    "psycopg[binary]>=3.3.2" \
+    "python-decouple>=3.8"
 
 # Copy project
 COPY . .

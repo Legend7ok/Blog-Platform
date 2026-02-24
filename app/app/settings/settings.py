@@ -116,11 +116,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# SMTP SERVER CONFIGURATION
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS")
 
-# Конфигурация сервера электронной почты
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'dimtkac777@gmail.com'
-EMAIL_HOST_PASSWORD = 'nlnllnburavtuqam'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+STATIC_URL = "https://pub-73291c1fa9c04c2298768e3cbb7fdb69.r2.dev/static/"
+MEDIA_URL = "https://pub-73291c1fa9c04c2298768e3cbb7fdb69.r2.dev/media/"
