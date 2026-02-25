@@ -2,6 +2,7 @@ from decouple import config
 
 R2_ACCOUNT_ID = config("R2_ACCOUNT_ID")
 R2_BUCKET = config("R2_BUCKET")
+R2_PUBLIC_DOMAIN = config("R2_PUBLIC_DOMAIN", default="")
 
 R2_ENDPOINT = f"https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
 
@@ -15,6 +16,10 @@ COMMON_R2_OPTIONS = {
     "default_acl": None,
     "querystring_auth": False,
 }
+
+if R2_PUBLIC_DOMAIN:
+    COMMON_R2_OPTIONS["custom_domain"] = R2_PUBLIC_DOMAIN
+    COMMON_R2_OPTIONS["url_protocol"] = "https:"
 
 STORAGES = {
     "default": {  # MEDIA

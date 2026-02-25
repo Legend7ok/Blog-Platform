@@ -123,5 +123,9 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = os.environ.get("EMAIL_PORT")
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS")
 
-STATIC_URL = "https://pub-73291c1fa9c04c2298768e3cbb7fdb69.r2.dev/static/"
-MEDIA_URL = "https://pub-73291c1fa9c04c2298768e3cbb7fdb69.r2.dev/media/"
+if R2_PUBLIC_DOMAIN:
+    STATIC_URL = f"https://{R2_PUBLIC_DOMAIN}/static/"
+    MEDIA_URL = f"https://{R2_PUBLIC_DOMAIN}/media/"
+else:
+    STATIC_URL = "/static/"
+    MEDIA_URL = "/media/"

@@ -20,7 +20,8 @@ RUN pip install --no-cache-dir \
     "django-taggit>=6.1.0" \
     "markdown>=3.10.2" \
     "psycopg[binary]>=3.3.2" \
-    "python-decouple>=3.8"
+    "python-decouple>=3.8" \
+    "pillow>=12.1.1"
 
 # Copy project
 COPY . .

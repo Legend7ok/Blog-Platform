@@ -27,6 +27,12 @@ class Post(models.Model):
                               choices=Status.choices,
                               default=Status.DRAFT)
 
+    image = models.ImageField(
+        upload_to="posts/%Y/%m/%d/",
+        blank=True,
+        null=True
+    )
+
     objects = models.Manager()
     published = PublishedManager()
 
