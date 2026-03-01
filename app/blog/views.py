@@ -6,7 +6,7 @@ from .forms import EmailPostForm, CommentForm, SearchForm
 from django.core.mail import send_mail, BadHeaderError
 from django.views.decorators.http import require_POST, require_http_methods
 from taggit.models import Tag
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.contrib.postgres.search import TrigramSimilarity
 from django.http import HttpResponse
 from django.conf import settings
@@ -40,13 +40,15 @@ def post_list(request, tag_slug=None):
                   'blog/post/list.html',
                   {'posts': posts, 'tag': tag})
 
-def post_detail(request, year, month, day, post):
-    post = get_object_or_404(Post,
-                             status=Post.Status.PUBLISHED,
-                             slug=post,
-                             publish__year=year,
-                             publish__month=month,
-                             publish__day=day)
+def post_detail(request, year, month, day, slug):
+    post = get_object_or_404(
+        Post.published.select_related('author').prefetch_related('tags'),
+        slug=slug,
+        publish__year=year,
+        publish__month=month,
+        publish__day=day
+    )
+
     # Список активных комментариев к этому посту
     comments = post.comments.filter(active=True)
 
@@ -55,8 +57,15 @@ def post_detail(request, year, month, day, post):
 
     # Список схожих постов
     post_tags_ids = post.tags.values_list('id', flat=True)
-    similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
-    similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')[:4]
+
+    similar_posts = (
+        Post.published.filter(tags__in=post_tags_ids)
+        .exclude(id=post.id)
+        .annotate(
+            same_tags=Count('tags', filter=Q(tags__in=post_tags_ids), distinct=True),
+        )
+        .order_by('-same_tags', '-publish')[:4]
+    )
 
     return render(request, 'blog/post/detail.html',
                   {'post': post,
