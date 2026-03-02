@@ -13,3 +13,9 @@ dependencies = [
     "psycopg[binary]>=3.3.2",
     "python-decouple>=3.8",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "pytest-django>=4.11.1",
+]
