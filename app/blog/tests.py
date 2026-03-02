@@ -56,3 +56,48 @@ def detail_url(post):
         "blog:post_detail",
         args=[post.publish.year, post.publish.month, post.publish.day, post.slug],
     )
+
+def test_post_list_published_only(client, make_post):
+    published = make_post(status=Post.Status.PUBLISHED, title="Published post")
+    make_post(status=Post.Status.DRAFT, title="Draft post")
+
+    response = client.get(reverse("blog:post_list"))
+
+    posts_page = response.context["posts"]
+    assert response.status_code == 200
+    assert list(posts_page.object_list) == [published]
+
+
+def test_post_list_pagination_valid_page(client, make_post):
+    for i in range(7):
+        make_post(title=f"Published {i}")
+
+    response = client.get(reverse("blog:post_list"), {"page": 2})
+
+    posts_page = response.context["posts"]
+    assert response.status_code == 200
+    assert posts_page.number == 2
+    assert len(posts_page.object_list) == 3
+
+
+def test_post_list_pagination_invalid_page_returns_first(client, make_post):
+    for i in range(7):
+        make_post(title=f"Published {i}")
+
+    response = client.get(reverse("blog:post_list"), {"page": "bad"})
+
+    posts_page = response.context["posts"]
+    assert response.status_code == 200
+    assert posts_page.number == 1
+
+
+def test_post_list_pagination_out_of_range_returns_last(client, make_post):
+    for i in range(7):
+        make_post(title=f"Published {i}")
+
+    response = client.get(reverse("blog:post_list"), {"page": 999})
+
+    posts_page = response.context["posts"]
+    assert response.status_code == 200
+    assert posts_page.number == 3
+    assert len(posts_page.object_list) == 1
