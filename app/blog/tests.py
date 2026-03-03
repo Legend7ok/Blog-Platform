@@ -124,3 +124,33 @@ def test_post_detail_comments_only_active(client, make_post):
     assert response.status_code == 200
     assert comments == [active_comment]
 
+def test_post_comment_create(client, make_post):
+    post = make_post()
+    payload = {
+        "name": "John",
+        "email": "john@example.com",
+        "body": "Nice article",
+    }
+
+    response = client.post(reverse("blog:post_comment", args=[post.id]), data=payload)
+
+    comment = Comment.objects.get(post=post, email="john@example.com")
+    assert response.status_code == 200
+    assert comment.body == "Nice article"
+    assert comment.active is True
+
+
+def test_post_comment_draft_returns_404(client, make_post):
+    draft_post = make_post(status=Post.Status.DRAFT)
+    payload = {
+        "name": "John",
+        "email": "john@example.com",
+        "body": "Comment",
+    }
+
+    response = client.post(
+        reverse("blog:post_comment", args=[draft_post.id]),
+        data=payload,
+    )
+
+    assert response.status_code == 404
