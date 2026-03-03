@@ -57,6 +57,7 @@ def detail_url(post):
         args=[post.publish.year, post.publish.month, post.publish.day, post.slug],
     )
 
+
 def test_post_list_published_only(client, make_post):
     published = make_post(status=Post.Status.PUBLISHED, title="Published post")
     make_post(status=Post.Status.DRAFT, title="Draft post")
@@ -102,12 +103,14 @@ def test_post_list_pagination_out_of_range_returns_last(client, make_post):
     assert posts_page.number == 3
     assert len(posts_page.object_list) == 1
 
+
 def test_post_detail_draft_returns_404(client, make_post):
     draft_post = make_post(status=Post.Status.DRAFT, slug="draft-post")
 
     response = client.get(detail_url(draft_post))
 
     assert response.status_code == 404
+
 
 def test_post_detail_comments_only_active(client, make_post):
     post = make_post()
@@ -123,6 +126,7 @@ def test_post_detail_comments_only_active(client, make_post):
     comments = list(response.context["comments"])
     assert response.status_code == 200
     assert comments == [active_comment]
+
 
 def test_post_comment_create(client, make_post):
     post = make_post()
@@ -154,3 +158,46 @@ def test_post_comment_draft_returns_404(client, make_post):
     )
 
     assert response.status_code == 404
+
+
+def test_post_share_draft_returns_404(client, make_post):
+    draft_post = make_post(status=Post.Status.DRAFT)
+
+    response = client.get(reverse("blog:post_share", args=[draft_post.id]))
+
+    assert response.status_code == 404
+
+
+def test_post_share_email_valid(client, make_post):
+    post = make_post(title="Share me")
+    payload = {
+        "name": "Alice",
+        "email": "alice@example.com",
+        "to": "bob@example.com",
+        "comments": "Take a look",
+    }
+
+    response = client.post(reverse("blog:post_share", args=[post.id]), data=payload)
+
+    assert response.status_code == 200
+    assert response.context["sent"] is True
+    assert len(mail.outbox) == 1
+    assert mail.outbox[0].to == ["bob@example.com"]
+    assert "Share me" in mail.outbox[0].subject
+
+
+def test_post_share_email_invalid(client, make_post):
+    post = make_post()
+    payload = {
+        "name": "Alice",
+        "email": "alice@example.com",
+        "to": "not-an-email",
+        "comments": "Bad email",
+    }
+
+    response = client.post(reverse("blog:post_share", args=[post.id]), data=payload)
+
+    assert response.status_code == 200
+    assert response.context["sent"] is False
+    assert len(mail.outbox) == 0
+
