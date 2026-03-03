@@ -69,7 +69,7 @@ def test_post_list_published_only(client, make_post):
 
 
 def test_post_list_pagination_valid_page(client, make_post):
-    for i in range(7):
+    for i in range(5):
         make_post(title=f"Published {i}")
 
     response = client.get(reverse("blog:post_list"), {"page": 2})
@@ -77,7 +77,7 @@ def test_post_list_pagination_valid_page(client, make_post):
     posts_page = response.context["posts"]
     assert response.status_code == 200
     assert posts_page.number == 2
-    assert len(posts_page.object_list) == 3
+    assert len(posts_page.object_list) == 2
 
 
 def test_post_list_pagination_invalid_page_returns_first(client, make_post):
@@ -101,3 +101,26 @@ def test_post_list_pagination_out_of_range_returns_last(client, make_post):
     assert response.status_code == 200
     assert posts_page.number == 3
     assert len(posts_page.object_list) == 1
+
+def test_post_detail_draft_returns_404(client, make_post):
+    draft_post = make_post(status=Post.Status.DRAFT, slug="draft-post")
+
+    response = client.get(detail_url(draft_post))
+
+    assert response.status_code == 404
+
+def test_post_detail_comments_only_active(client, make_post):
+    post = make_post()
+    active_comment = Comment.objects.create(
+        post=post, name="Active", email="a@example.com", body="visible", active=True
+    )
+    Comment.objects.create(
+        post=post, name="Inactive", email="i@example.com", body="hidden", active=False
+    )
+
+    response = client.get(detail_url(post))
+
+    comments = list(response.context["comments"])
+    assert response.status_code == 200
+    assert comments == [active_comment]
+
