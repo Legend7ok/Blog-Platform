@@ -218,3 +218,17 @@ def test_post_search_works_by_title(client, make_post):
     results = list(response.context["results"])
     assert response.status_code == 200
     assert title_match in results
+
+
+def test_post_list_tag_filtering(client, make_post):
+    tagged = make_post(title="Tagged post")
+    tagged.tags.add("django")
+
+    not_tagged = make_post(title="No tag post")
+    not_tagged.tags.add("python")
+
+    response = client.get(reverse("blog:post_list_by_tag", args=["django"]))
+
+    posts_page = response.context["posts"]
+    assert response.status_code == 200
+    assert list(posts_page.object_list) == [tagged]
