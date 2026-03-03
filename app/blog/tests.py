@@ -201,3 +201,20 @@ def test_post_share_email_invalid(client, make_post):
     assert response.context["sent"] is False
     assert len(mail.outbox) == 0
 
+
+def test_post_search_works_by_title(client, make_post):
+    if connection.vendor != "postgresql":
+        pytest.skip("Current post_search uses PostgreSQL TrigramSimilarity.")
+
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
+
+    title_match = make_post(title="Python patterns", body="Misc text")
+    make_post(title="No keyword", body="Deep dive into Python testing")
+    make_post(title="Completely unrelated", body="No matches here")
+
+    response = client.get(reverse("blog:post_search"), {"query": "Python"})
+
+    results = list(response.context["results"])
+    assert response.status_code == 200
+    assert title_match in results
