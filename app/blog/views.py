@@ -3,7 +3,7 @@ from .models import Post, Comment
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 from .forms import EmailPostForm, CommentForm, SearchForm
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import send_mail
 from django.views.decorators.http import require_POST, require_http_methods
 from taggit.models import Tag
 from django.db.models import Count, Q
@@ -110,7 +110,7 @@ def post_share(request, post_id):
                 )
                 sent = True
 
-            except BadHeaderError:
+            except ValueError:
                 return HttpResponse('Invalid header found.')
     else:
         form = EmailPostForm()
