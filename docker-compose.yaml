@@ -13,7 +13,9 @@ services:
       - "5432:5432"
 
   web:
-    build: .
+    build:
+      context: .
+      target: web
     container_name: blog_web
     command: python app/manage.py runserver 0.0.0.0:8000
     ports:
@@ -26,8 +28,12 @@ services:
       - .:/app
 
   test:
-    build: .
+    build:
+      context: .
+      target: test
     command: test-blog
+    profiles:
+      - test
     env_file:
       - .env
     depends_on:

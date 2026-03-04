@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.13-slim AS base
 
 WORKDIR /app
 
@@ -12,12 +12,16 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 
 COPY pyproject.toml uv.lock /app/
 
-RUN uv pip install --system --no-cache . \
-    && uv pip install --system --no-cache pytest pytest-django
-
-RUN printf '#!/bin/sh\nset -e\npython app/manage.py migrate\npytest app/blog/tests.py -q\n' > /usr/local/bin/test-blog \
-    && chmod +x /usr/local/bin/test-blog
+RUN uv pip install --system --no-cache .
 
 COPY /app /app
 
+FROM base AS web
+
 EXPOSE 8000
+
+FROM base AS test
+
+RUN uv pip install --system --no-cache pytest pytest-django
+RUN printf '#!/bin/sh\nset -e\npytest app/blog/tests.py -q\n' > /usr/local/bin/test-blog \
+    && chmod +x /usr/local/bin/test-blog
