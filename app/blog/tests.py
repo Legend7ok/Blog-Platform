@@ -58,6 +58,17 @@ def detail_url(post):
     )
 
 
+def test_published_manager_returns_only_published_posts(make_post):
+    published_post = make_post(status=Post.Status.PUBLISHED)
+    drafts_post = make_post(status=Post.Status.DRAFT)
+
+    published_posts = Post.published.all()
+
+    assert published_post in published_posts
+    assert drafts_post not in published_posts
+    assert published_posts.count() == 1
+
+
 def test_post_list_published_only(client, make_post):
     published = make_post(status=Post.Status.PUBLISHED, title="Published post")
     make_post(status=Post.Status.DRAFT, title="Draft post")
