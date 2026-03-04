@@ -104,6 +104,20 @@ def test_post_list_pagination_out_of_range_returns_last(client, make_post):
     assert len(posts_page.object_list) == 1
 
 
+def test_post_list_tag_filtering(client, make_post):
+    tagged_post = make_post(title="Django guide")
+    tagged_post.tags.add("django")
+
+    other_post = make_post(title="Python guide")
+    other_post.tags.add("python")
+
+    response = client.get(reverse("blog:post_list_by_tag", args=["django"]))
+
+    posts_page = response.context["posts"]
+    assert response.status_code == 200
+    assert list(posts_page.object_list) == [tagged_post]
+
+
 def test_post_detail_draft_returns_404(client, make_post):
     draft_post = make_post(status=Post.Status.DRAFT, slug="draft-post")
 
@@ -220,15 +234,9 @@ def test_post_search_works_by_title(client, make_post):
     assert title_match in results
 
 
-def test_post_list_tag_filtering(client, make_post):
-    tagged_post = make_post(title="Django guide")
-    tagged_post.tags.add("django")
+def test_post_search_empty_query(client):
+    response = client.get(reverse("blog:post_search"), {"query": ""})
 
-    other_post = make_post(title="Python guide")
-    other_post.tags.add("python")
-
-    response = client.get(reverse("blog:post_list_by_tag", args=["django"]))
-
-    posts_page = response.context["posts"]
     assert response.status_code == 200
-    assert list(posts_page.object_list) == [tagged_post]
+    assert "results" in response.context
+    assert list(response.context["results"]) == []
