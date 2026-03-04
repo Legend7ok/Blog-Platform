@@ -30,6 +30,11 @@ def author():
 
 @pytest.fixture
 def make_post(author):
+    """
+    Factory fixture to create Post objects with unique slugs and titles.
+    Accepts any Post model field as a keyword argument.
+    """
+
     counter = {"value": 0}
 
     def _make_post(**kwargs):
@@ -59,6 +64,8 @@ def detail_url(post):
 
 
 def test_published_manager_returns_only_published_posts(make_post):
+    """Verify that the custom manager filters out all non-published posts."""
+
     published_post = make_post(status=Post.Status.PUBLISHED)
     drafts_post = make_post(status=Post.Status.DRAFT)
 
@@ -116,6 +123,8 @@ def test_post_list_pagination_out_of_range_returns_last(client, make_post):
 
 
 def test_post_list_tag_filtering(client, make_post):
+    """Ensure the post_list correctly filters content by a given tag slug."""
+
     tagged_post = make_post(title="Django guide")
     tagged_post.tags.add("django")
 
@@ -138,6 +147,8 @@ def test_post_detail_draft_returns_404(client, make_post):
 
 
 def test_post_detail_comments_only_active(client, make_post):
+    """Verify that only approved (active) comments are displayed on the post_page."""
+
     post = make_post()
     active_comment = Comment.objects.create(
         post=post, name="Active", email="a@example.com", body="visible", active=True
@@ -194,6 +205,8 @@ def test_post_share_draft_returns_404(client, make_post):
 
 
 def test_post_share_email_valid(client, make_post):
+    """Check successful email delivery and outbox content for valid form data."""
+
     post = make_post(title="Share me")
     payload = {
         "name": "Alice",
@@ -212,6 +225,8 @@ def test_post_share_email_valid(client, make_post):
 
 
 def test_post_share_email_invalid(client, make_post):
+    """Ensure no emails are sent if the form contains invalid data."""
+
     post = make_post()
     payload = {
         "name": "Alice",
@@ -228,6 +243,11 @@ def test_post_share_email_invalid(client, make_post):
 
 
 def test_post_search_works_by_title(client, make_post):
+    """
+    Test PostgreSQL-specific TrigramSimilarity search.
+    Requires pg_trgm extension and skips on non-Postgres databases.
+    """
+
     if connection.vendor != "postgresql":
         pytest.skip("Current post_search uses PostgreSQL TrigramSimilarity.")
 
