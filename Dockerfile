@@ -12,7 +12,11 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 
 COPY pyproject.toml uv.lock /app/
 
-RUN uv pip install --system --no-cache .
+RUN uv pip install --system --no-cache . \
+    && uv pip install --system --no-cache pytest pytest-django
+
+RUN printf '#!/bin/sh\nset -e\npython app/manage.py migrate\npytest app/blog/tests.py -q\n' > /usr/local/bin/test-blog \
+    && chmod +x /usr/local/bin/test-blog
 
 COPY /app /app
 
