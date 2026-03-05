@@ -12,12 +12,6 @@ from django.http import HttpResponse
 from django.conf import settings
 
 
-class PostListView(ListView):
-    queryset = Post.published.all()
-    context_object_name = 'posts'
-    paginate_by = 3
-    template_name = 'blog/post/list.html'
-
 def post_list(request, tag_slug=None):
     post_list = Post.published.all()
     tag = None
@@ -127,7 +121,7 @@ def post_comment(request, post_id):
 
     comment = None
     # Комментарий был отправлен
-    form = CommentForm(data = request.POST)
+    form = CommentForm(data=request.POST)
     if form.is_valid():
         # Создать объект класса Comment, не сохраняя его в базе данных
         comment = form.save(commit=False)
@@ -147,12 +141,6 @@ def post_search(request):
         form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            # search_vector = SearchVector('title', weight='A') + SearchVector('body', weight='B')
-            # search_query = SearchQuery(query)
-            # results = Post.published.annotate(
-            #     search=search_vector,
-            #     rank=SearchRank(search_vector, search_query)
-            # ).filter(rank__gte=0.3).order_by('-rank')
             results = Post.published.annotate(
                 similarity=TrigramSimilarity('title', query),
             ).filter(similarity__gt=0.1).order_by('-similarity')
