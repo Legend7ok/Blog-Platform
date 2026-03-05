@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Post, Comment
 from django.utils.html import format_html
 
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ['title', 'slug', 'author', 'publish', 'status', 'image_preview']
@@ -18,6 +19,7 @@ class PostAdmin(admin.ModelAdmin):
         if obj.image:
             return format_html('<img src="{}" width="50" />', obj.image.url)
         return "-"
+
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
