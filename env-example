@@ -1,3 +1,8 @@
+# DJANGO CORE
+DEBUG=True
+SECRET_KEY=your_long_random_secret_key
+ALLOWED_HOSTS=your-domain.com,www.your-domain.com
+
 # DATABASE
 POSTGRES_DB=blog
 POSTGRES_USER=postgres

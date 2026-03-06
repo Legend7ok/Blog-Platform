@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from django.core.exceptions import ImproperlyConfigured
 from .settings_storages import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -10,12 +11,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6s8uffp)_zd_^(ni#4zp!o=h#ekt%-gvp)9_q^282_ek0h)5_&'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes", "on")
 
-ALLOWED_HOSTS = []
+if not SECRET_KEY and not DEBUG:
+    raise ImproperlyConfigured("SECRET_KEY must be set when DEBUG is False.")
+
+if not SECRET_KEY:
+    SECRET_KEY = "dev-insecure-secret-key-change-me"
+
+ALLOWED_HOSTS = [
+    host.strip() for host in os.environ.get("ALLOWED_HOSTS", "").split(",") if host.strip()
+]
 
 
 SITE_ID = 1
