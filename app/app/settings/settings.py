@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 from django.core.exceptions import ImproperlyConfigured
 from .settings_storages import *
+from .settings_markdown import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

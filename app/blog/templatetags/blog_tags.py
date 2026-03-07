@@ -1,8 +1,10 @@
+import bleach
+import markdown
 from django import template
-from ..models import Post
+from django.conf import settings
 from django.db.models import Count
 from django.utils.safestring import mark_safe
-import markdown
+from ..models import Post
 
 
 register = template.Library()
@@ -26,7 +28,18 @@ def get_most_commented_posts(count=5):
 
 @register.filter(name='markdown')
 def markdown_format(text):
-    return mark_safe(markdown.markdown(text))
+    raw_html = markdown.markdown(
+        text or "",
+        extensions=getattr(settings, "MARKDOWN_EXTENSIONS", ["extra", "sane_lists"]),
+    )
+    clean_html = bleach.clean(
+        raw_html,
+        tags=getattr(settings, "MARKDOWN_ALLOWED_TAGS", []),
+        attributes=getattr(settings, "MARKDOWN_ALLOWED_ATTRIBUTES", {}),
+        protocols=getattr(settings, "MARKDOWN_ALLOWED_PROTOCOLS", ["http", "https"]),
+        strip=True,
+    )
+    return mark_safe(clean_html)
 
 
 @register.simple_tag
