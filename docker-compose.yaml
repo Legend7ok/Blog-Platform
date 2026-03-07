@@ -18,7 +18,12 @@ services:
       target: web
     container_name: blog_web
     working_dir: /app/app
-    command: gunicorn --config gunicorn.conf.py app.wsgi:application
+    command: >-
+      sh -c 'if [ "${DEBUG:-False}" = "True" ] || [ "${DEBUG:-False}" = "true" ] || [ "${DEBUG:-False}" = "1" ]; then
+        python manage.py runserver 0.0.0.0:8000;
+      else
+        gunicorn --config gunicorn.conf.py app.wsgi:application;
+      fi'
     ports:
       - "8000:8000"
     env_file:
