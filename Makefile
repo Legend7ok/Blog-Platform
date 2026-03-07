@@ -1,7 +1,7 @@
 COMPOSE := docker compose -f docker-compose.yaml
 COMPOSE_TEST := $(COMPOSE) --profile test
 
-.PHONY: help up up-build build down restart logs ps shell migrate makemigrations test collectstatic superuser
+.PHONY: help up up-build build down restart logs ps shell migrate makemigrations test buildcss collectstatic superuser
 
 help:
 	@echo "Available commands:"
@@ -16,6 +16,7 @@ help:
 	@echo "  make migrate        Apply Django migrations"
 	@echo "  make makemigrations Create Django migrations"
 	@echo "  make test           Run tests in test profile"
+	@echo "  make buildcss       Build Tailwind CSS (minified)"
 	@echo "  make collectstatic  Collect static files"
 	@echo "  make superuser      Create Django superuser"
 
@@ -51,7 +52,10 @@ makemigrations:
 test:
 	$(COMPOSE_TEST) run --rm test
 
-collectstatic:
+buildcss:
+	cd app && npm run build:css
+
+collectstatic: buildcss
 	$(COMPOSE) run --rm web python app/manage.py collectstatic --no-input
 
 superuser:
