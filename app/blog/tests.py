@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .models import Comment, Post
+from .templatetags.blog_tags import markdown_format
 
 
 pytestmark = pytest.mark.django_db
@@ -271,3 +272,26 @@ def test_post_search_empty_query(client):
     assert response.status_code == 200
     assert "results" in response.context
     assert list(response.context["results"]) == []
+
+
+def test_markdown_filter_strips_script_tags():
+    rendered = str(markdown_format("Hello<script>alert('xss')</script>World"))
+
+    assert "<script>" not in rendered
+    assert "alert('xss')" not in rendered
+    assert "Hello" in rendered
+    assert "World" in rendered
+
+
+def test_markdown_filter_removes_event_handler_attributes():
+    rendered = str(markdown_format('<img src="x" onerror="alert(1)">'))
+
+    assert "<img" not in rendered
+    assert "onerror" not in rendered
+
+
+def test_markdown_filter_blocks_javascript_protocol_in_links():
+    rendered = str(markdown_format("[Click me](javascript:alert(1))"))
+
+    assert "javascript:" not in rendered
+    assert "<a" in rendered

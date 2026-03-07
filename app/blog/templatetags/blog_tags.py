@@ -1,5 +1,6 @@
 import bleach
 import markdown
+import re
 from django import template
 from django.conf import settings
 from django.db.models import Count
@@ -31,6 +32,13 @@ def markdown_format(text):
     raw_html = markdown.markdown(
         text or "",
         extensions=getattr(settings, "MARKDOWN_EXTENSIONS", ["extra", "sane_lists"]),
+    )
+    # Remove script/style blocks with their content before generic sanitization.
+    raw_html = re.sub(
+        r"<(script|style)\b[^>]*>.*?</\1>",
+        "",
+        raw_html,
+        flags=re.IGNORECASE | re.DOTALL,
     )
     clean_html = bleach.clean(
         raw_html,
