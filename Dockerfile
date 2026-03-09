@@ -1,29 +1,27 @@
-FROM python:3.13-slim
+FROM python:3.13-slim AS base
 
-# Устанавливаем системные зависимости
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Устанавливаем uv
-RUN pip install --no-cache-dir uv
-
-# Рабочая директория
 WORKDIR /app
 
-# Копируем только зависимости (кэширование слоёв)
-COPY pyproject.toml uv.lock ./
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends make curl gettext \
+    && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем зависимости
-RUN uv sync --frozen
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
+    && mv /root/.local/bin/uv /usr/local/bin/uv \
+    && mv /root/.local/bin/uvx /usr/local/bin/uvx
 
-# Копируем весь проект
-COPY . .
+COPY pyproject.toml uv.lock /app/
 
-# Открываем порт
+RUN uv pip install --system --no-cache .
+
+COPY /app /app
+
+FROM base AS web
+
 EXPOSE 8000
 
-# Запуск Django
-CMD ["uv", "run", "python", "app/manage.py", "runserver", "0.0.0.0:8000"]
+FROM base AS test
+
+RUN uv pip install --system --no-cache pytest pytest-django
+RUN printf '#!/bin/sh\nset -e\npytest app/blog/tests.py -q\n' > /usr/local/bin/test-blog \
+    && chmod +x /usr/local/bin/test-blog

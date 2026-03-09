@@ -1,5 +1,8 @@
 from pathlib import Path
 import os
+from django.core.exceptions import ImproperlyConfigured
+from .settings_storages import *
+from .settings_markdown import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,12 +12,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6s8uffp)_zd_^(ni#4zp!o=h#ekt%-gvp)9_q^282_ek0h)5_&'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes", "on")
 
-ALLOWED_HOSTS = []
+if not SECRET_KEY and not DEBUG:
+    raise ImproperlyConfigured("SECRET_KEY must be set when DEBUG is False.")
+
+if not SECRET_KEY:
+    SECRET_KEY = "dev-insecure-secret-key-change-me"
+
+ALLOWED_HOSTS = [
+    host.strip() for host in os.environ.get("ALLOWED_HOSTS", "").split(",") if host.strip()
+]
 
 
 SITE_ID = 1
@@ -33,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.postgres',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -114,11 +126,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# SMTP SERVER CONFIGURATION
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
-# Конфигурация сервера электронной почты
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'dimtkac777@gmail.com'
-EMAIL_HOST_PASSWORD = 'nlnllnburavtuqam'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+if R2_PUBLIC_DOMAIN:
+    STATIC_URL = f"https://{R2_PUBLIC_DOMAIN}/static/"
+    MEDIA_URL = f"https://{R2_PUBLIC_DOMAIN}/media/"
+else:
+    STATIC_URL = "/static/"
+    MEDIA_URL = "/media/"

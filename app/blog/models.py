@@ -4,9 +4,11 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from taggit.managers import TaggableManager
 
+
 class PublishedManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(status=Post.Status.PUBLISHED)
+
 
 class Post(models.Model):
 
@@ -26,6 +28,12 @@ class Post(models.Model):
     status = models.CharField(max_length=2,
                               choices=Status.choices,
                               default=Status.DRAFT)
+
+    image = models.ImageField(
+        upload_to="posts/%Y/%m/%d/",
+        blank=True,
+        null=True
+    )
 
     objects = models.Manager()
     published = PublishedManager()

@@ -10,3 +10,10 @@ wheels/
 .venv
 db.sqlite3
 .env
+
+# Node
+node_modules/
+
+# IDE
+.idea/
+.vscode/

@@ -1,13 +1,60 @@
-<div class="pagination">
-    <span class="step-links">
+{% load blog_tags %}
+{% pagination_range page 5 as page_range %}
+<!-- Pagination navigation -->
+<nav class="pagination" role="navigation" aria-label="Pagination">
+    <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+        <!-- Previous page -->
         {% if page.has_previous %}
-            <a href="?page={{ page.previous_page_number }}">Previous</a>
+            <a href="?page={{ page.previous_page_number }}" aria-label="previous" class="mr-4 flex items-center gap-1 text-gray-900 transition-colors hover:text-black dark:text-gray-100 dark:hover:text-white">
+                <svg class="mt-px" width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.75 12.5h11.5m-11.5 0 4.792-4.791M5.75 12.5l4.792 4.792" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>previous</span>
+            </a>
+        {% else %}
+            <!-- Disabled previous -->
+            <span class="mr-4 flex items-center gap-1 text-gray-300 dark:text-gray-600">
+                <svg class="mt-px" width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.75 12.5h11.5m-11.5 0 4.792-4.791M5.75 12.5l4.792 4.792" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>previous</span>
+            </span>
         {% endif %}
-        <span class="current">
-            Page {{ page.number }} of {{ page.paginator.num_pages }}.
-        </span>
+
+        <!-- Page numbers -->
+        <div class="flex gap-2 text-sm md:text-base">
+            {% for num in page_range %}
+                {% if page.number == num %}
+                    <!-- Current page -->
+                    <span class="flex items-center justify-center w-9 md:w-12 h-9 md:h-12 aspect-square rounded-md bg-purple-100 text-purple-700 transition-colors dark:bg-purple-500/20 dark:text-purple-300">
+                        {{ num }}
+                    </span>
+                {% else %}
+                    <!-- Page link -->
+                    <a href="?page={{ num }}"
+                       class="flex items-center justify-center active:scale-95 w-9 md:w-12 h-9 md:h-12 aspect-square rounded-md transition-colors hover:bg-gray-200/70 dark:hover:bg-gray-800">
+                        {{ num }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Next page -->
         {% if page.has_next %}
-            <a href="?page={{ page.next_page_number }}">Next</a>
+            <a href="?page={{ page.next_page_number }}" aria-label="next" class="ml-4 flex items-center gap-1 text-gray-900 transition-colors hover:text-black dark:text-gray-100 dark:hover:text-white">
+                <span>next</span>
+                <svg class="mt-px" width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.25 11.5H5.75m11.5 0-4.792-4.79m4.792 4.79-4.792 4.792" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        {% else %}
+            <!-- Disabled next -->
+            <span class="ml-4 flex items-center gap-1 text-gray-300 dark:text-gray-600">
+                <span>next</span>
+                <svg class="mt-px" width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.25 11.5H5.75m11.5 0-4.792-4.79m4.792 4.79-4.792 4.792" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
         {% endif %}
-    </span>
-</div>
+    </div>
+</nav>

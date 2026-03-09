@@ -1,38 +1,142 @@
 {% load blog_tags %}
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
-    <link href="{% static "css/blog.css" %}" rel="stylesheet">
+
+    <!-- Theme bootstrap (pre-CSS) -->
+    <script>
+        (function() {
+            try {
+                var storedTheme = localStorage.getItem("theme");
+                var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+                var theme = (storedTheme === "dark" || storedTheme === "light")
+                    ? storedTheme
+                    : (prefersDark ? "dark" : "light");
+                if (theme === "dark") {
+                    document.documentElement.classList.add("dark");
+                } else {
+                    document.documentElement.classList.remove("dark");
+                }
+                document.documentElement.setAttribute("data-theme", theme);
+            } catch (e) {
+                // Fail silently to avoid blocking render
+            }
+        })();
+    </script>
+
+    <!-- Tailwind CSS -->
+    <link href="{% static 'dist/styles.css' %}" rel="stylesheet">
 </head>
-<body>
-    <div id="content">
-        {% block content %}
-        {% endblock %}
-    </div>
-    <div id="sidebar">
-        <h2>My blog</h2>
-        <p>
-            This is my blog.
-            I've written {% total_posts %} posts so far
-        </p>
-        <p>
-            <a href="{% url 'blog:post_feed' %}">
-                Subscribe to my RSS feed
+
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+
+    <!-- Navbar -->
+    <header class="border border-gray-200 bg-white dark:border-b dark:border-gray-800 dark:bg-gray-950">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <!-- Brand / home link -->
+            <a href="{% url 'blog:post_list' %}"
+               class="text-2xl font-bold text-purple-700 dark:text-purple-300">
+                Super Blog
             </a>
-        </p>
-        <h3>Latest posts</h3>
-        {% show_latest_posts 3 %}
-        <h3>Most commented posts</h3>
-        {% get_most_commented_posts as most_commented_posts %}
-        <ul>
-            {% for post in most_commented_posts %}
-                <li>
-                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+            <div class="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+                <!-- Search form -->
+                <form action="{% url 'blog:post_search' %}" method="get" class="flex items-center gap-2 sm:ml-6">
+                    <input type="search" name="query" required
+                           placeholder="Search posts"
+                           aria-label="Search posts"
+                           class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm outline-none transition-colors focus:ring-2 focus:ring-purple-500 sm:w-56 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-purple-400">
+                    <button type="submit"
+                            class="inline-flex items-center justify-center rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 active:scale-[0.98] dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800">
+                        Search
+                    </button>
+                </form>
+                <!-- RSS link -->
+                <div class="flex items-center gap-3 text-sm text-gray-600 whitespace-nowrap sm:ml-auto dark:text-gray-400">
+                    <div>
+                        Subscribe to my
+                        <a href="{% url 'blog:post_feed' %}"
+                           class="font-medium text-blue-600 transition-colors hover:underline dark:text-indigo-400 dark:hover:text-indigo-300">
+                            RSS Feed
+                        </a>
+                    </div>
+                    <!-- Theme toggle -->
+                    <button type="button"
+                            data-theme-toggle
+                            aria-pressed="false"
+                            aria-label="Toggle dark mode"
+                            class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white p-1 text-gray-700 transition-colors hover:bg-gray-50 active:scale-[0.98] dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800">
+                        <span data-theme-option="light"
+                              class="rounded-full bg-purple-100 px-2.5 py-0.5 text-sm whitespace-nowrap text-purple-700 dark:bg-purple-500/20 dark:text-purple-300">
+                            Light
+                        </span>
+                        <span data-theme-option="dark"
+                              class="rounded-full border border-purple-500 px-2.5 py-0.5 text-sm whitespace-nowrap text-purple-700 dark:text-purple-300">
+                            Dark
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main layout -->
+    <main class="max-w-7xl 2xl:max-w-[1500px] mx-auto px-6 lg:pl-8 lg:pr-2 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+            <!-- Primary content area (child templates render here) -->
+            <section class="lg:col-span-2">
+                {% block content %}
+                {% endblock %}
+            </section>
+
+            <!-- Sidebar -->
+            <aside class="space-y-8 lg:justify-self-end lg:w-full">
+
+                <!-- About card -->
+                <div class="rounded-[10px] border border-gray-200 bg-white p-6 text-center shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900 dark:shadow-black/20">
+                    <h2 class="text-lg font-semibold mb-3 dark:text-gray-100">About</h2>
+                    <p class="text-gray-600 text-sm leading-relaxed dark:text-gray-400">
+                        This is my blog.
+                        I've written
+                        <span class="font-semibold text-gray-900 dark:text-gray-100">{% total_posts %}</span>
+                        posts so far.
+                    </p>
+                </div>
+
+                <!-- Latest posts -->
+                <div class="rounded-[10px] border border-gray-200 bg-white p-6 text-center shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900 dark:shadow-black/20">
+                    <h3 class="text-lg font-semibold mb-4 dark:text-gray-100">Latest Posts</h3>
+                    <div class="space-y-2 text-sm text-blue-600 dark:text-indigo-400">
+                        {% show_latest_posts 3 %}
+                    </div>
+                </div>
+
+                <!-- Most commented posts -->
+                <div class="rounded-[10px] border border-gray-200 bg-white p-6 text-center shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900 dark:shadow-black/20">
+                    <h3 class="text-lg font-semibold mb-4 dark:text-gray-100">Most Commented</h3>
+                    {% get_most_commented_posts as most_commented_posts %}
+                    <ul class="space-y-2 text-sm">
+                        {% for post in most_commented_posts %}
+                            <li>
+                                <a href="{{ post.get_absolute_url }}"
+                                   class="text-blue-600 transition-colors hover:underline dark:text-indigo-400 dark:hover:text-indigo-300">
+                                    {{ post.title }}
+                                </a>
+                            </li>
+                        {% empty %}
+                            <li class="text-gray-500 dark:text-gray-400">No posts yet.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </aside>
+
+        </div>
+    </main>
+    <script src="{% static 'js/theme.js' %}" defer></script>
 </body>
 </html>
